@@ -2,13 +2,12 @@ import { useContext, useEffect, useRef, useState  } from "react"
 import gsap from "gsap";
 import { RefContext } from "../context/RefContext";
 import { useNavigate } from "react-router-dom";
-import type { RefContextType } from "../context/RefContext";
 
 // Add Empty input checks 
 export default function Home(){
 
     const nav = useNavigate();
-    const context = useContext(RefContext) as RefContextType | null;
+    const context = useContext(RefContext);
     const [create , setCreate] = useState(false);
     const [join , setjoin ] = useState(false);
     const createRoom = useRef<HTMLDivElement>(null);
@@ -16,9 +15,11 @@ export default function Home(){
     const roomID = useRef<HTMLInputElement>(null);
     const joinID = useRef<HTMLInputElement>(null);
 
-    // Destruct ws ref object from context;
-    const ws  = context?.ws;
-
+    if (!context) {
+        throw new Error("RefContext is not available. Make sure Home is wrapped inside RefContext.Provider.");
+      }
+      const ws = context.ws;
+      
     useEffect(() => {
         if(!ws) return ;
         if (!ws.current) {
@@ -49,15 +50,14 @@ export default function Home(){
     function CreateRoomfn(){
         const createroom  = roomID?.current?.value;
         // @ts-ignore
-        ws.current.onopen(() => {
-            // @ts-ignore
+
             ws.current.send(JSON.stringify({
                 type : "join",
                 payload : {
                     roomId : createroom
                 } 
             }))
-        })
+    
         
         animateJoinRoom();
     }
