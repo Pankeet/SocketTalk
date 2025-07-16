@@ -19,14 +19,13 @@ export default function Home(){
         throw new Error("RefContext is not available. Make sure Home is wrapped inside RefContext.Provider.");
       }
       const ws = context.ws;
-      
+
     useEffect(() => {
         if(!ws) return ;
         if (!ws.current) {
-          ws.current = new WebSocket("ws://localhost:8080");
+          ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
         }
       });
-      
 
     function animateJoinRoom(){
         gsap.to(creatingRoom.current,{
