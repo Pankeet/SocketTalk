@@ -5,20 +5,21 @@ import { RefContext } from "../context/RefContext";
 export default function ChatRoom(){
 
     const context = useContext(RefContext);
-    const [msg , setmsg] = useState([]);
+    const [msg , setmsg] = useState<string []>([]);
     const sendMsg = useRef<HTMLInputElement>(null);
 
+    // @ts-ignore
     const { ws } = context;
 
     useEffect(() =>{
-        ws.current.onmessage = (event) => {
+        ws.current.onmessage = (event : MessageEvent) => {
             setmsg(m => [...m , event.data]);
         }
 
         return () => {
             ws.current.onmessage = null;
         };
-    },[])
+    })
     return <>
         <div className="flex flex-col justify-end items-center h-screen w-full bg-gray-950 text-white">
             <div>
