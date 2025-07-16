@@ -33,7 +33,7 @@ function HomePage() {
     gsap.to(welcome.current,{
       opacity:0,
       duration:4,
-      delay : 0.1,
+      delay : 0.4,
       scale : 0.5,
       y : -20
     });
