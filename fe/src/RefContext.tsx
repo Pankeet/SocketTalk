@@ -1,8 +1,7 @@
-// src/RefContext.tsx
 import React, { createContext, useRef } from 'react';
 
 type RefContextType = {
-  ws: React.RefObject<WebSocket>;
+  ws: React.RefObject<WebSocket | null>;
 };
 
 export const RefContext = createContext<RefContextType | null>(null);

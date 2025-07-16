@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState  } from "react"
 import gsap from "gsap";
-import { RefContext } from "../../RefContext";
+import { RefContext } from "../context/RefContext";
 import { useNavigate } from "react-router-dom";
 
 // Add Empty input checks 
@@ -20,7 +20,7 @@ export default function Home(){
 
     useEffect(() => {
         if(!ws.current){
-        ws.current = new WebSocket("http://localhost:8080") ;
+        ws.current = new WebSocket("ws://localhost:8080") ;
         }
     },[ws])
 

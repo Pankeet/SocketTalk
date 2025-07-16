@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import Send from "../icons/getStarted";
-import { RefContext } from "../../RefContext";
+import { RefContext } from "../context/RefContext";
 
 export default function ChatRoom(){
 
