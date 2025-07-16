@@ -1,23 +1,28 @@
-import { useEffect, useRef, useState  } from "react"
+import { useContext, useEffect, useRef, useState  } from "react"
 import gsap from "gsap";
+import { RefContext } from "../../RefContext";
 import { useNavigate } from "react-router-dom";
 
 // Add Empty input checks 
 export default function Home(){
 
     const nav = useNavigate();
+    const context = useContext(RefContext);
     const [create , setCreate] = useState(false);
     const [join , setjoin ] = useState(false);
     const createRoom = useRef<HTMLDivElement>(null);
     const creatingRoom = useRef<HTMLDivElement>(null);
     const roomID = useRef<HTMLInputElement>(null);
     const joinID = useRef<HTMLInputElement>(null);
-    const wsRef = useRef<WebSocket>(null);
+
+    // Destruct ws ref object from context;
+    const { ws } = context;
 
     useEffect(() => {
-        const ws = new WebSocket("http://localhost:8080") ;
-        wsRef.current = ws;
-    },[])
+        if(!ws.current){
+        ws.current = new WebSocket("http://localhost:8080") ;
+        }
+    },[ws])
 
     function animateJoinRoom(){
         gsap.to(creatingRoom.current,{
@@ -41,7 +46,7 @@ export default function Home(){
     function CreateRoomfn(){
         const createroom  = roomID?.current?.value;
         // @ts-ignore
-        wsRef.current.send(JSON.stringify({
+        ws.current.send(JSON.stringify({
             type : "join",
             payload : {
                 roomId : createroom
@@ -53,7 +58,7 @@ export default function Home(){
     function JoinRoomfn(){
         const joinroom = joinID?.current?.value;
         //@ts-ignore
-        wsRef.current.send(JSON.stringify({
+        ws.current.send(JSON.stringify({
             type : "join",
             payload : {
                 roomID : joinroom

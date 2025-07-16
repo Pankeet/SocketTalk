@@ -1,14 +1,15 @@
 import './App.css';
-//import { createContext } from 'react';
+import { RefProvider } from './RefContext';
+import { createContext } from 'react';
 import { HashRouter as Router , Routes , Route } from 'react-router-dom';
 import HomePage from './components/ui/WelcomePage';
 import Home from './components/ui/Home';
 import ChatRoom from './components/ui/chatRoom';
 
 
-
 export default function App(){
     return (
+      <RefProvider>
       <Router>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -17,6 +18,7 @@ export default function App(){
           <Route path="*" element={<Error />} />
         </Routes>
       </Router>
+      </RefProvider>
     )
 }
 
