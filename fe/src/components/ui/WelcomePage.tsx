@@ -7,12 +7,12 @@ function HomePage() {
 
   const [onbutton, setOnButton] = useState(false);
   const sendSvg = useRef<HTMLDivElement>(null);
-  const intro = useRef<HTMLDivElement>(null);
+  const welcome = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const nav = useNavigate();
 
   useLayoutEffect(() => {
-    gsap.from(intro.current , {
+    gsap.from(welcome.current , {
       opacity: 0,
       y: -20,
       duration: 1,
@@ -30,12 +30,12 @@ function HomePage() {
       ease : "power2.out"
     });
 
-    gsap.to(intro.current,{
+    gsap.to(welcome.current,{
       opacity:0,
       duration:4,
       delay : 0.1,
-      x : -1000,
-      ease : "power2.out"
+      scale : 0.5,
+      y : -20
     });
 
     gsap.to(buttonRef.current ,{
@@ -51,7 +51,7 @@ function HomePage() {
 
   return (
     <div className="overflow-hidden min-h-screen w-full bg-gray-950 text-white flex flex-col justify-center items-center">
-      <span ref={intro} className="text-5xl">
+      <span ref={welcome} className="text-5xl">
         Welcome to SocketTalk
       </span>
       <div className='flex'>
