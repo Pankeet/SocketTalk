@@ -2,12 +2,13 @@ import { useContext, useEffect, useRef, useState  } from "react"
 import gsap from "gsap";
 import { RefContext } from "../context/RefContext";
 import { useNavigate } from "react-router-dom";
+import type { RefContextType } from "../context/RefContext";
 
 // Add Empty input checks 
 export default function Home(){
 
     const nav = useNavigate();
-    const context = useContext(RefContext);
+    const context = useContext(RefContext) as RefContextType | null;
     const [create , setCreate] = useState(false);
     const [join , setjoin ] = useState(false);
     const createRoom = useRef<HTMLDivElement>(null);
@@ -16,13 +17,15 @@ export default function Home(){
     const joinID = useRef<HTMLInputElement>(null);
 
     // Destruct ws ref object from context;
-    const { ws } = context;
+    const ws  = context?.ws;
 
     useEffect(() => {
-        if(!ws.current){
-        ws.current = new WebSocket("ws://localhost:8080") ;
+        if(!ws) return ;
+        if (!ws.current) {
+          ws.current = new WebSocket("ws://localhost:8080");
         }
-    },[ws])
+      });
+      
 
     function animateJoinRoom(){
         gsap.to(creatingRoom.current,{
@@ -46,12 +49,16 @@ export default function Home(){
     function CreateRoomfn(){
         const createroom  = roomID?.current?.value;
         // @ts-ignore
-        ws.current.send(JSON.stringify({
-            type : "join",
-            payload : {
-                roomId : createroom
-            } 
-        }))
+        ws.current.onopen(() => {
+            // @ts-ignore
+            ws.current.send(JSON.stringify({
+                type : "join",
+                payload : {
+                    roomId : createroom
+                } 
+            }))
+        })
+        
         animateJoinRoom();
     }
 
