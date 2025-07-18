@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+#nprogress .bar {
+    background: #00008f; 
+    height: 7px;
+  }
+  
+  #nprogress .peg {
+    box-shadow: 0 0 10px #0749b2, 0 0 5px #136dfd;
+  }
+  

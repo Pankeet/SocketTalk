@@ -1,5 +1,7 @@
 import { useContext, useEffect, useRef, useState  } from "react"
 import gsap from "gsap";
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 import { RefContext } from "../context/RefContext";
 import { useNavigate } from "react-router-dom";
 
@@ -21,18 +23,26 @@ export default function Home(){
       const ws = context.ws;
 
     useEffect(() => {
-        if(!ws) return ;
-        if (!ws.current) {
-          ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
-        }
-      });
+        NProgress.start();
+            if(!ws) return ;
+            if (!ws.current) {
+            ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
+            }
+            setTimeout(() => {
+                NProgress.done();
+            },1000);
+      },[ws]);
 
     function animateJoinRoom(){
         gsap.to(creatingRoom.current,{
-            scaleX : 0.5,
+            scale : 0.5,
             opacity : 0,
+            duration : 0.6,
+            delay : 0.1
         });
-        nav('/chat');
+        setTimeout(() => {
+            nav('/chat');
+        }, 800);
     }
 
     function createMeeting(){
@@ -49,34 +59,18 @@ export default function Home(){
     function CreateRoomfn(){
         const createroom  = roomID?.current?.value;
         // @ts-ignore
-
             ws.current.send(JSON.stringify({
                 type : "join",
                 payload : {
                     roomId : createroom
                 } 
             }))
-    
-        
         animateJoinRoom();
-    }
-
-    function JoinRoomfn(){
-        const joinroom = joinID?.current?.value;
-        //@ts-ignore
-        ws.current.send(JSON.stringify({
-            type : "join",
-            payload : {
-                roomID : joinroom
-            }
-        }));
-       animateJoinRoom();
     }
 
     return (
         <div className="h-screen min-w-full grid place-content-center text-white bg-gradient-to-r from-gray-950 to-black">
             {!create && !join && <div ref={createRoom} className="flex gap-16 border border-white p-4">
-    
                 <div>
                     <button onClick={() => {
                         setTimeout(() => {
@@ -132,7 +126,7 @@ export default function Home(){
                             />
                         </div>
                     <div>
-                        <button type='submit' onClick={JoinRoomfn} className="border-white text-amber-400 mt-4 px-4 py-2 border rounded-lg hover:shadow-md hover:shadow-amber-200 transition-all duration-300">Join</button>
+                        <button type='submit' onClick={CreateRoomfn} className="border-white text-amber-400 mt-4 px-4 py-2 border rounded-lg hover:shadow-md hover:shadow-amber-200 transition-all duration-300">Join</button>
                     </div>
                 </div>}
         </div>
