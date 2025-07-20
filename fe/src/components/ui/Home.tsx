@@ -1,6 +1,8 @@
 import { useContext, useEffect, useRef, useState  } from "react"
 import gsap from "gsap";
+import Lottie from 'lottie-react';
 import NProgress from 'nprogress';
+import loaderAnimation from "../../assets/loader.json";
 import 'nprogress/nprogress.css';
 import { RefContext } from "../context/RefContext";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +12,7 @@ export default function Home(){
 
     const nav = useNavigate();
     const context = useContext(RefContext);
+    const [ loading , setloading ] = useState(false);
     const [create , setCreate] = useState(false);
     const [join , setjoin ] = useState(false);
     const createRoom = useRef<HTMLDivElement>(null);
@@ -23,14 +26,21 @@ export default function Home(){
       const ws = context.ws;
 
     useEffect(() => {
-        NProgress.start();
             if(!ws) return ;
             if (!ws.current) {
-            ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
+                setloading(true);
+                NProgress.start();
+                ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
+
+                 ws.current.onopen = () => {
+                    setloading(false);
+                    NProgress.done();
+                };
+
+                ws.current.onerror = (err) => {
+                    console.error("WebSocket error:", err);
+                };
             }
-            setTimeout(() => {
-                NProgress.done();
-            },1000);
       },[ws]);
 
     function animateJoinRoom(){
@@ -67,7 +77,14 @@ export default function Home(){
             }))
         animateJoinRoom();
     }
-
+    if(loading){
+        return (
+            <div className="bg-black h-screen w-screen flex justify-center items-center">
+               <Lottie animationData={loaderAnimation} loop={true} />
+            </div>
+        ) 
+    }
+    else{
     return (
         <div className="h-screen min-w-full grid place-content-center text-white bg-gradient-to-r from-gray-950 to-black">
             {!create && !join && <div ref={createRoom} className="flex gap-16 border border-white p-4">
@@ -131,5 +148,5 @@ export default function Home(){
                 </div>}
         </div>
     )
-
+    }
 }
