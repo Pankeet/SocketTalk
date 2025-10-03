@@ -28,7 +28,7 @@ export default function ChatRoom(){
     const [msg , setmsg] = useState<string []>([]);
     const sendMsg = useRef<HTMLInputElement>(null);
 
-    // @ts-ignore
+    // @ts-expect-error the type of ws is any
     const { ws } = context;
 
     useEffect(() =>{
