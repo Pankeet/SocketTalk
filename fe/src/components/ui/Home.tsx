@@ -68,7 +68,7 @@ export default function Home(){
    
     function CreateRoomfn(){
         const createroom  = roomID?.current?.value;
-        // @ts-ignore
+        // @ts-expect-error i can be null according to TS 
             ws.current.send(JSON.stringify({
                 type : "join",
                 payload : {
