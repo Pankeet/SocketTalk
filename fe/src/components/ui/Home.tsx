@@ -45,12 +45,14 @@ export default function Home(){
 
     async function animateJoinRoom(){
         if(!creatingRoom.current) return;
+        if (typeof window !== "undefined") {
             gsap.to(creatingRoom.current,{
                 scale : 0.5,
                 opacity : 0,
                 duration : 0.6,
                 delay : 0.1
             });
+        }
         setTimeout(() => {
             nav('/chat',{
                 state : {
@@ -62,14 +64,15 @@ export default function Home(){
 
     async function createMeeting(){
         if(!createRoom.current) return;
-        gsap.to(createRoom.current , {
-            rotateY : 180,
-            duration : 1.2 ,
-            ease : "power2.inOut",
-            scaleX : 1.5,
-            opacity : 0
-        });
-
+        if(typeof window !== "undefined"){
+            gsap.to(createRoom.current , {
+                rotateY : 180,
+                duration : 1.2 ,
+                ease : "power2.inOut",
+                scaleX : 1.5,
+                opacity : 0
+            });
+        }
     }
    
     function CreateRoomfn(){
