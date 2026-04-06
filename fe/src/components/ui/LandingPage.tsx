@@ -43,12 +43,12 @@ function HomePage() {
 
   return (
     <div className="h-screen w-full bg-gradient-to-b from-slate-900 to-gray-950 text-white flex flex-col justify-center items-center">
-      <span ref={welcome} className="text-5xl">
+      <span ref={welcome} className="lg:text-5xl text-3xl">
         Welcome to SocketTalk
       </span>
       <div className='flex'>
         <div>
-        <button ref={buttonRef} onClick={getStarted} className={onbutton ? `text-3xl` :`text-xl mt-7 bg-white text-black px-3 py-2 rounded-lg hover:shadow-lg hover:shadow-purple-800 transition-shadow duration-300`}>
+        <button ref={buttonRef} onClick={getStarted} className={onbutton ? `lg:text-3xl text-2xl` :`lg:text-xl text-md font-semibold mt-7 bg-white text-black lg:px-5 px-3 lg:py-3 py-2 rounded-lg hover:shadow-lg hover:shadow-purple-800 transition-shadow duration-300`}>
           {onbutton ?  "Starting Socket Engine" : "Get Started ?" }
         </button>
         </div>
