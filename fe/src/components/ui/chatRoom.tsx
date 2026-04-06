@@ -1,6 +1,7 @@
-import { useContext, useEffect, useRef, useState } from "react"
-import Send from "../icons/getStarted";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { RefContext, type RefContextType } from "../context/RefContext";
+import Send from "../icons/getStarted";
 
 type ChatMessage = {
     message: string;
@@ -12,6 +13,8 @@ export default function ChatRoom(){
     const {ws} = useContext(RefContext) as RefContextType;
     const sendMsg = useRef<HTMLInputElement>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const location = useLocation();
+    const username = location.state?.username || "Anonymous";
 
     useEffect(() =>{
         if (!ws.current) return;
@@ -48,12 +51,12 @@ export default function ChatRoom(){
             type : "chat",
             payload : {
                 message : sendMsg.current.value,
-                name : "Anonymous"
+                name : username
             }
         }));
         sendMsg.current.value = "";
     }
-    console.log(messages);
+
     return (
         <div className="flex flex-col justify-end items-center h-screen w-full bg-gray-950 text-white">
             <div>

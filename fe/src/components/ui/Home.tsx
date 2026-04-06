@@ -52,8 +52,12 @@ export default function Home(){
             delay : 0.1
         });
         setTimeout(() => {
-            nav('/chat');
-        }, 800);
+            nav('/chat',{
+                state : {
+                    username : userId.current?.value || "Anonymous"
+                }
+            });
+        }, 600);
     }
 
     function createMeeting(){
@@ -80,6 +84,7 @@ export default function Home(){
             alert("WebSocket not connected yet ! Please wait for a moment and try again.");
             return;
         }
+        console.log("Sending join message with roomId:", roomValue, "and name:", userId.current?.value || "Anonymous");
             ws.current.send(JSON.stringify({
                 type : "join",
                 payload : {
