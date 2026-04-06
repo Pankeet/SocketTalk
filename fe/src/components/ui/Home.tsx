@@ -1,8 +1,10 @@
 import { useContext, useEffect, useRef, useState  } from "react";
+import { useNavigate } from "react-router-dom";
+import { RefContext } from "../context/RefContext";
+import Lottie from "lottie-react";
+import gsap from "gsap";
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import { RefContext } from "../context/RefContext";
-import { useNavigate } from "react-router-dom";
 
 // Add Empty input checks 
 export default function Home(){
@@ -43,25 +45,23 @@ export default function Home(){
 
     async function animateJoinRoom(){
         if(!creatingRoom.current) return;
-        const gsap = (await import("gsap")).default;
-        gsap.to(creatingRoom.current,{
-            scale : 0.5,
-            opacity : 0,
-            duration : 0.6,
-            delay : 0.1
-        });
+            gsap.to(creatingRoom.current,{
+                scale : 0.5,
+                opacity : 0,
+                duration : 0.6,
+                delay : 0.1
+            });
         setTimeout(() => {
             nav('/chat',{
                 state : {
                     username : userId.current?.value || "Anonymous"
                 }
             });
-        }, 600);
+        }, 600);   
     }
 
     async function createMeeting(){
         if(!createRoom.current) return;
-        const gsap = (await import("gsap")).default;
         gsap.to(createRoom.current , {
             rotateY : 180,
             duration : 1.2 ,
@@ -104,7 +104,7 @@ export default function Home(){
     if(loading){
         return (
             <div className="bg-black h-screen w-screen flex justify-center items-center">
-               Loading...
+               <Lottie animationData={"/loader.json"} loop={true} className="w-48 h-48" /> 
             </div>
         ) 
     }
