@@ -73,9 +73,9 @@ export default function ChatRoom(){
 
     return (
         <div className="flex flex-col justify-end items-center h-screen w-full bg-gray-950 text-white">
-            <span className="text-xl lg:text-2xl font-semibold lg:font-bold mt-5 fixed left-5 top-3">Chat Room</span>
-            <span className="text-sm text-gray-400 fixed left-5 top-16 ">Room Name is: {roomName}</span>
-            <div className="w-full max-w-72 md:max-w-xl lg:max-w-2xl flex flex-col gap-3 lg:p-10 p-2 mb-3 overflow-y-auto">
+            <span className="text-xl lg:text-3xl font-semibold lg:font-bold mt-5 fixed lg:left-10 left-5 lg:top-6 top-3">Chat Room</span>
+            <span className="text-md lg:text-base text-gray-400 fixed lg:left-11 left-5 lg:top-20 top-16 ">Room Name is: {roomName}</span>
+            <div className="w-full max-w-72 md:max-w-xl lg:max-w-2xl flex flex-col gap-3 lg:p-10 p-2 mb-3 overflow-y-auto mt-24 md:mt-auto">
                 {messages.map((msg, index) => {
                 const isMe = msg.name === username;
 
