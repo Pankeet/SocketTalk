@@ -19,6 +19,7 @@ export default function Home(){
     const creatingRoom = useRef<HTMLDivElement>(null);
     const roomID = useRef<HTMLInputElement>(null);
     const joinID = useRef<HTMLInputElement>(null);
+    const userId = useRef<HTMLInputElement>(null);
 
     if (!context) {
         throw new Error("RefContext is not available. Make sure Home is wrapped inside RefContext.Provider.");
@@ -30,7 +31,7 @@ export default function Home(){
             if (!ws.current) {
                 setloading(true);
                 NProgress.start();
-                ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
+                ws.current = new WebSocket("ws://localhost:8080");
 
                  ws.current.onopen = () => {
                     setloading(false);
@@ -67,12 +68,23 @@ export default function Home(){
     }
    
     function CreateRoomfn(){
-        const createroom  = roomID?.current?.value;
-        // @ts-expect-error i can be null according to TS 
+        const roomValue = create ? roomID.current?.value : joinID.current?.value;
+
+        if (!roomValue || roomValue.trim() === "") {
+            alert("Room ID cannot be empty");
+            return;
+        }   
+
+        if (!ws.current) {
+            console.error("WebSocket not connected yet");
+            alert("WebSocket not connected yet ! Please wait for a moment and try again.");
+            return;
+        }
             ws.current.send(JSON.stringify({
                 type : "join",
                 payload : {
-                    roomId : createroom
+                    roomId : roomValue,
+                    name : userId.current?.value || "Anonymous" 
                 } 
             }))
         animateJoinRoom();
@@ -86,7 +98,7 @@ export default function Home(){
     }
     else{
     return (
-        <div className="h-screen min-w-full grid place-content-center text-white bg-gradient-to-r from-gray-950 to-black">
+        <div className="h-screen w-full grid place-content-center text-white bg-gradient-to-r from-gray-950 to-black">
             {!create && !join && <div ref={createRoom} className="flex gap-16 border border-white p-4">
                 <div>
                     <button onClick={() => {
@@ -103,7 +115,7 @@ export default function Home(){
                 </div>
 
                 <div>
-                    <button 
+                    <button disabled={!ws.current}
                     className="text-2xl rounded-lg border border-amber-600 py-2 px-5"
                     onClick={() => {
                         setTimeout(() => {
@@ -126,6 +138,13 @@ export default function Home(){
                             className="mt-5 w-full px-4 py-2 bg-transparent border border-gray-700 text-white placeholder-gray-500 rounded-xl 
                             focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-purple-500/20"
                             />
+                             <input 
+                            type="text"
+                            placeholder="User Name"
+                            ref={userId}
+                            className="mt-5 w-full px-4 py-2 bg-transparent border border-gray-700 text-white placeholder-gray-500 rounded-xl 
+                            focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-purple-500/20"
+                            />  
                         </div>
                     <div>
                         <button type='submit' onClick={CreateRoomfn} className="border-white text-amber-400 mt-4 px-4 py-2 border rounded-lg hover:shadow-md hover:shadow-amber-200 transition-all duration-300">Create</button>
@@ -141,6 +160,13 @@ export default function Home(){
                             className="mt-5 w-full px-4 py-2 bg-transparent border border-gray-700 text-white placeholder-gray-500 rounded-xl 
                             focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-purple-500/20"
                             />
+                            <input 
+                            type="text"
+                            placeholder="User Name"
+                            ref={userId}
+                            className="mt-5 w-full px-4 py-2 bg-transparent border border-gray-700 text-white placeholder-gray-500 rounded-xl 
+                            focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-purple-500/20"
+                            />  
                         </div>
                     <div>
                         <button type='submit' onClick={CreateRoomfn} className="border-white text-amber-400 mt-4 px-4 py-2 border rounded-lg hover:shadow-md hover:shadow-amber-200 transition-all duration-300">Join</button>

@@ -1,7 +1,7 @@
 import './App.css';
 import { RefProvider } from './components/context/RefProvider';
 import { BrowserRouter as Router , Routes , Route } from 'react-router-dom';
-import HomePage from './components/ui/WelcomePage';
+import HomePage from './components/ui/LandingPage';
 import Home from './components/ui/Home';
 import ChatRoom from './components/ui/chatRoom';
 

@@ -1,69 +1,61 @@
-# React + TypeScript + Vite
+# SocketTalk
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A real-time web application that enables multiple users to chat across different rooms using WebSockets. Built with a focus on speed and a clean, intuitive user interface.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Real-time Messaging**: Instant chat updates across rooms using WebSockets.
+- **Multiple Rooms**: Create and join different chat rooms for organized conversations.
+- **Fast and Clean UI**: Responsive design with a minimalistic interface for seamless user experience.
+- **Multi-user Support**: Handles multiple concurrent users efficiently.
 
-## Expanding the ESLint configuration
+## Technologies Used
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Frontend: HTML, CSS, JavaScript (with WebSocket integration)
+- Backend: Node.js with WebSocket library (e.g., Socket.io)
+- Other: Any additional libraries for UI (e.g., Bootstrap or custom CSS)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Installation and Setup
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+Follow these steps to set up the project locally:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Clone the Repository**:
+  ```
+  git clone https://github.com/yourusername/socket-talk.git
+  cd socket-talk
+  ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. **Install Dependencies**:
+  - For the backend (if separate):
+    ```
+    cd backend
+    npm install
+    ```
+  - For the frontend:
+    ```
+    cd fe
+    npm install
+    ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3. **Start the Server**:
+  - Run the backend server:
+    ```
+    cd backend
+    npm start
+    ```
+  - The server should start on a port (e.g., 3000).
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4. **Run the Frontend**:
+  - Open `fe/index.html` in a browser or use a local server:
+    ```
+    cd fe
+    npx http-server
+    ```
+  - Access the app at `http://localhost:8080` (or your configured port).
+
+5. **Usage**:
+  - Open the app in multiple browser tabs or devices.
+  - Create or join a room by entering a room name.
+  - Start chatting in real-time.
+
+Ensure Node.js and npm are installed on your system. For any issues, check the console for errors.

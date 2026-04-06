@@ -6,8 +6,7 @@ let AllSockets = [];
 wss.on("connection", (socket) => {
     socket.on("message", (message) => {
         var _a;
-        // @ts-ignore
-        const ParsedMsg = JSON.parse(message);
+        const ParsedMsg = JSON.parse(message.toString());
         if (ParsedMsg.type === 'join') {
             AllSockets.push({
                 socket,
@@ -16,14 +15,32 @@ wss.on("connection", (socket) => {
             });
         }
         if (ParsedMsg.type === 'chat') {
-            const userRoom = (_a = AllSockets.find((x) => x.socket == socket)) === null || _a === void 0 ? void 0 : _a.room;
-            for (let i = 0; i < AllSockets.length; i++) {
-                if (AllSockets[i].room == userRoom) {
-                    AllSockets[i].socket.send(ParsedMsg.payload.message);
+            const senderRoom = (_a = AllSockets.find((x) => x.socket === socket)) === null || _a === void 0 ? void 0 : _a.room;
+            if (!senderRoom)
+                return;
+            for (const client of AllSockets) {
+                if (client.room === senderRoom) {
+                    client.socket.send(JSON.stringify({
+                        type: "chat",
+                        message: ParsedMsg.payload.message,
+                        name: ParsedMsg.payload.name
+                    }));
                 }
             }
         }
     });
-    socket.on("disconnect", () => {
+    socket.on("close", () => {
+        const user = AllSockets.find(u => u.socket === socket);
+        if (!user)
+            return;
+        AllSockets = AllSockets.filter(user => user.socket !== socket);
+        for (const clients of AllSockets) {
+            if (clients.room === user.room) {
+                clients.socket.send(JSON.stringify({
+                    type: "user_left",
+                    message: `${user.name} has left the room !`
+                }));
+            }
+        }
     });
 });
