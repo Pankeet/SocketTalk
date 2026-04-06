@@ -1,8 +1,5 @@
-import { useContext, useEffect, useRef, useState  } from "react"
-import gsap from "gsap";
-import Lottie from 'lottie-react';
+import { useContext, useEffect, useRef, useState  } from "react";
 import NProgress from 'nprogress';
-import loaderAnimation from "../../assets/loader.json";
 import 'nprogress/nprogress.css';
 import { RefContext } from "../context/RefContext";
 import { useNavigate } from "react-router-dom";
@@ -27,24 +24,26 @@ export default function Home(){
       const ws = context.ws;
 
     useEffect(() => {
-            if(!ws) return ;
-            if (!ws.current) {
-                setloading(true);
-                NProgress.start();
-                ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
+        if (typeof window === "undefined") return;
+        if(!ws) return ;
+        if (!ws.current) {
+            setloading(true);
+            NProgress.start();
+            ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
+            ws.current.onopen = () => {
+                setloading(false);
+                NProgress.done();
+            };
 
-                 ws.current.onopen = () => {
-                    setloading(false);
-                    NProgress.done();
-                };
-
-                ws.current.onerror = (err) => {
-                    console.error("WebSocket error:", err);
-                };
+            ws.current.onerror = (err) => {
+                console.error("WebSocket error:", err);
+            };
             }
       },[ws]);
 
-    function animateJoinRoom(){
+    async function animateJoinRoom(){
+        if(!creatingRoom.current) return;
+        const gsap = (await import("gsap")).default;
         gsap.to(creatingRoom.current,{
             scale : 0.5,
             opacity : 0,
@@ -60,7 +59,9 @@ export default function Home(){
         }, 600);
     }
 
-    function createMeeting(){
+    async function createMeeting(){
+        if(!createRoom.current) return;
+        const gsap = (await import("gsap")).default;
         gsap.to(createRoom.current , {
             rotateY : 180,
             duration : 1.2 ,
@@ -72,7 +73,13 @@ export default function Home(){
     }
    
     function CreateRoomfn(){
-        const roomValue = create ? roomID.current?.value : joinID.current?.value;
+        let roomValue = "";
+
+        if (create && roomID.current) {
+            roomValue = roomID.current.value;
+        } else if (join && joinID.current) {
+            roomValue = joinID.current.value;
+        }
 
         if (!roomValue || roomValue.trim() === "") {
             alert("Room ID cannot be empty");
@@ -97,7 +104,7 @@ export default function Home(){
     if(loading){
         return (
             <div className="bg-black h-screen w-screen flex justify-center items-center">
-               <Lottie animationData={loaderAnimation} loop={true} />
+               Loading...
             </div>
         ) 
     }
