@@ -19,9 +19,6 @@ This project reflects a strong grasp of full-stack development, real-time system
 * **Persistent Message Storage**
   Messages are stored and retrieved efficiently, allowing continuity across sessions.
 
-* **JWT-Based Authentication**
-  Stateless authentication mechanism ensuring secure and scalable user sessions.
-
 * **Responsive User Interface**
   Optimised for both desktop and mobile devices, ensuring usability across screen sizes.
 
@@ -34,9 +31,7 @@ This project reflects a strong grasp of full-stack development, real-time system
 
 * **Frontend**: React.js, Tailwind CSS
 * **Backend**: Node.js, Express.js
-* **Real-Time Layer**: WebSockets (Socket.io)
-* **Database**: MongoDB
-* **Authentication**: JSON Web Tokens (JWT)
+* **Real-Time Layer**: WebSockets
 * **Tooling**: Git, npm, Vercel (deployment)
 
 ---
@@ -45,11 +40,11 @@ This project reflects a strong grasp of full-stack development, real-time system
 
 The application follows a client-server architecture enhanced with persistent WebSocket connections.
 
-* Clients establish a WebSocket connection with the server after initial authentication.
+* Clients establish a WebSocket connection with the server.
 * Each user joins a specific room, managed server-side.
 * Messages are emitted as events and broadcast selectively to room participants.
-* MongoDB is used to persist chat history and user data.
 * The system avoids unnecessary re-renders and redundant listeners, ensuring efficient runtime behaviour.
+* Note:- MongoDB can be used to persist chat history and user data.
 
 This design allows horizontal scalability and efficient handling of concurrent users.
 
@@ -75,17 +70,8 @@ cd client
 npm install
 ```
 
-### 3. Environment Variables
 
-Create a `.env` file in the server directory and include:
-
-```env
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-PORT=5000
-```
-
-### 4. Run the Application
+### 3. Run the Application
 
 ```bash
 # Start backend
@@ -96,13 +82,10 @@ cd client
 npm start
 ```
 
-Ensure MongoDB is running locally or via a cloud provider (e.g., MongoDB Atlas).
-
 ---
 
 ## Usage
 
-1. Register or log in as a user
 2. Enter or create a chat room
 3. Start sending messages in real time
 
@@ -120,10 +103,8 @@ https://socket-talk-liart.vercel.app/
 
 ```
 client/        → React frontend
-server/        → Express backend + WebSocket logic
-models/        → Database schemas
-middleware/    → Authentication & request handling
-config/        → Configuration and DB setup
+server/        → WebSocket logic
+
 ```
 
 ---
