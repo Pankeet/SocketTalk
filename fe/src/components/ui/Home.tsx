@@ -31,7 +31,7 @@ export default function Home(){
             if (!ws.current) {
                 setloading(true);
                 NProgress.start();
-                ws.current = new WebSocket("ws://localhost:8080");
+                ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
 
                  ws.current.onopen = () => {
                     setloading(false);
