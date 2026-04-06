@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState  } from "react";
 import { useNavigate } from "react-router-dom";
 import { RefContext } from "../context/RefContext";
-import Lottie from "lottie-react";
 import gsap from "gsap";
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
@@ -11,7 +10,6 @@ export default function Home(){
 
     const nav = useNavigate();
     const context = useContext(RefContext);
-    const [ loading , setloading ] = useState(false);
     const [create , setCreate] = useState(false);
     const [join , setjoin ] = useState(false);
     const createRoom = useRef<HTMLDivElement>(null);
@@ -29,11 +27,9 @@ export default function Home(){
         if (typeof window === "undefined") return;
         if(!ws) return ;
         if (!ws.current) {
-            setloading(true);
             NProgress.start();
             ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
             ws.current.onopen = () => {
-                setloading(false);
                 NProgress.done();
             };
 
@@ -104,14 +100,6 @@ export default function Home(){
             }))
         animateJoinRoom();
     }
-    if(loading){
-        return (
-            <div className="bg-black h-screen w-screen flex justify-center items-center">
-               <Lottie animationData={"/loader.json"} loop={true} className="w-48 h-48" /> 
-            </div>
-        ) 
-    }
-    else{
     return (
         <div className="h-screen w-full grid place-content-center text-white bg-gradient-to-r from-gray-950 to-black">
             {!create && !join && <div ref={createRoom} className="flex gap-16 border border-white p-4">
@@ -189,5 +177,4 @@ export default function Home(){
                 </div>}
         </div>
     )
-    }
 }
