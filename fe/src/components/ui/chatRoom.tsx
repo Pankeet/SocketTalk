@@ -10,32 +10,46 @@ type ChatMessage = {
 
 export default function ChatRoom(){
     
-    const {ws} = useContext(RefContext) as RefContextType;
+    const { ws } = useContext(RefContext) as RefContextType;
     const sendMsg = useRef<HTMLInputElement>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const location = useLocation();
     const username = location.state?.username || "Anonymous";
+    const roomName = location.state?.roomID;
+    const bottomRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() =>{
-        if (!ws.current) return;
-        ws.current.onmessage = (event : MessageEvent) => {
-            const data = JSON.parse(event.data);
-            if (data.type === "user_left") {
-            setMessages((prev) => [...prev,
-                {
-                    message: data.message,
-                    name: "System",
-                },
-            ]);
-            } 
-            if(data.type === "chat"){
-                setMessages((prevMessages) => [...prevMessages, {
-                    message: data.message,
-                    name: data.name 
-                }]);
-            }
-        };
-    }, [ws]);
+    useEffect(() => {
+    if (!ws.current) return;
+    const socket = ws.current;
+
+    const handler = (event: MessageEvent) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type === "user_left") {
+            setMessages(prev => [...prev, {
+                message: data.message,
+                name: "System",
+            }]);
+        }
+
+        if (data.type === "chat") {
+            setMessages(prev => [...prev, {
+                message: data.message,
+                name: data.name
+            }]);
+        }
+    };
+
+    socket.addEventListener("message", handler);
+
+    return () => {
+        socket.removeEventListener("message", handler);
+    };
+}, [ws,messages]);
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
 
     function sendMessage(){
         if(!sendMsg.current) return;
@@ -59,13 +73,38 @@ export default function ChatRoom(){
 
     return (
         <div className="flex flex-col justify-end items-center h-screen w-full bg-gray-950 text-white">
-            <div>
-                {messages.map((msg, index) => <div key={index} className="font-serif text-lg bg-gray-300 rounded-lg text-black px-7 py-2 m-3 max-w-80 break-words">
-                    <strong className="text-red-400">{msg.name} : </strong>{msg.message}
-                </div>)}
+            <span className="text-xl lg:text-2xl font-semibold lg:font-bold mt-5 fixed left-5 top-3">Chat Room</span>
+            <span className="text-sm text-gray-400 fixed left-5 top-16 ">Room Name is: {roomName}</span>
+            <div className="w-full max-w-72 md:max-w-xl lg:max-w-2xl flex flex-col gap-3 lg:p-10 p-2 mb-3 overflow-y-auto">
+                {messages.map((msg, index) => {
+                const isMe = msg.name === username;
+
+                return (
+                    <div
+                        key={index}
+                        className={`flex ${isMe ? "justify-end" : "justify-start"}`}
+                    >
+                        <div className={`max-w-xs px-4 py-2 rounded-2xl break-words ${isMe ? "bg-green-500 text-white rounded-br-none" : "bg-gray-300 text-black rounded-bl-none"}`}>
+                            <div className="text-xs font-semibold text-gray-600 mb-1">{!isMe ? msg.name : "You"}</div>
+                            <div className="text-sm">{msg.message}</div>
+                        </div>
+                    </div>
+                );
+                })}
+                <div ref={bottomRef} />
             </div>
             <div className="flex justify-between mb-10">
-                <input ref={sendMsg} type="text" className="px-5 py-2 rounded-full text-black" />
+                <input
+                    ref={sendMsg}
+                    type="text"
+                    className="px-5 py-2 rounded-full text-black"
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            sendMessage();
+                        }
+                    }}
+                />
                 <button type="submit" onClick={sendMessage} className="ml-3"><Send /></button>
             </div>
         </div>  

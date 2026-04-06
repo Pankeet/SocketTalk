@@ -1,15 +1,13 @@
 import { useContext, useEffect, useRef, useState  } from "react";
 import { useNavigate } from "react-router-dom";
-import { RefContext } from "../context/RefContext";
+import { RefContext, type RefContextType } from "../context/RefContext";
 import gsap from "gsap";
-import NProgress from 'nprogress';
+import nProgress from "nprogress";
 import 'nprogress/nprogress.css';
-
-// Add Empty input checks 
+ 
 export default function Home(){
 
     const nav = useNavigate();
-    const context = useContext(RefContext);
     const [create , setCreate] = useState(false);
     const [join , setjoin ] = useState(false);
     const createRoom = useRef<HTMLDivElement>(null);
@@ -17,27 +15,8 @@ export default function Home(){
     const roomID = useRef<HTMLInputElement>(null);
     const joinID = useRef<HTMLInputElement>(null);
     const userId = useRef<HTMLInputElement>(null);
-
-    if (!context) {
-        throw new Error("RefContext is not available. Make sure Home is wrapped inside RefContext.Provider.");
-      }
-      const ws = context.ws;
-
-    useEffect(() => {
-        if (typeof window === "undefined") return;
-        if(!ws) return ;
-        if (!ws.current) {
-            NProgress.start();
-            ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
-            ws.current.onopen = () => {
-                NProgress.done();
-            };
-
-            ws.current.onerror = (err) => {
-                console.error("WebSocket error:", err);
-            };
-            }
-      },[ws]);
+    
+    const { ws, connected } = useContext(RefContext) as RefContextType;
 
     async function animateJoinRoom(){
         if(!creatingRoom.current) return;
@@ -47,10 +26,12 @@ export default function Home(){
             duration : 0.6,
             delay : 0.1
         });
+        console.log(roomID.current?.value, joinID.current?.value, userId.current?.value);
         setTimeout(() => {
             nav('/chat',{
                 state : {
-                    username : userId.current?.value || "Anonymous"
+                    username : userId.current?.value || "Anonymous",
+                    roomID : create ? roomID.current?.value : joinID.current?.value
                 }
             });
         }, 600);   
@@ -76,17 +57,16 @@ export default function Home(){
             roomValue = joinID.current.value;
         }
 
-        if (!roomValue || roomValue.trim() === "") {
-            alert("Room ID cannot be empty");
+        if (!roomValue || roomValue.trim() === "" || !userId.current || userId.current.value.trim() === "") {
+            alert("Room ID or User Name cannot be empty");
             return;
-        }   
+        }  
 
         if (!ws.current) {
             console.error("WebSocket not connected yet");
             alert("WebSocket not connected yet ! Please wait for a moment and try again.");
             return;
         }
-        console.log("Sending join message with roomId:", roomValue, "and name:", userId.current?.value || "Anonymous");
             ws.current.send(JSON.stringify({
                 type : "join",
                 payload : {
@@ -96,6 +76,12 @@ export default function Home(){
             }))
         animateJoinRoom();
     }
+    useEffect(() => {
+        nProgress.start();
+        if (connected) {
+            nProgress.done();
+        }   
+    }, [connected]);
     return (
         <div className="h-screen w-full grid place-content-center text-white bg-gradient-to-r from-gray-950 to-black">
             {!create && !join && <div ref={createRoom} className="flex gap-16 border border-white p-4">
@@ -114,7 +100,7 @@ export default function Home(){
                 </div>
 
                 <div>
-                    <button disabled={!ws.current}
+                    <button disabled={!connected}
                     className="text-2xl rounded-lg border border-amber-600 py-2 px-5"
                     onClick={() => {
                         setTimeout(() => {
