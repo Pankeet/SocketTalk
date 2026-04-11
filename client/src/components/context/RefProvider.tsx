@@ -6,7 +6,7 @@ export const RefProvider = ({ children }: { children: React.ReactNode }) => {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    ws.current = new WebSocket("wss://sockettalk-2mkq.onrender.com");
+    ws.current = new WebSocket("wss://socket-talk-b6ma.onrender.com");
     ws.current.onopen = () => {
       console.log("WebSocket connected");
       setConnected(true);
