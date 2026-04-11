@@ -25,6 +25,9 @@ This project reflects a strong grasp of full-stack development, real-time system
 * **Efficient Event Handling**
   Server-side event broadcasting ensures minimal overhead while maintaining consistency across connected clients.
 
+- **Real-Time Presence Tracking**  
+  The system actively monitors user connections and disconnections. When a participant leaves a room, the system (server) broadcasts instantly to all remaining users, ensuring awareness of active participants.
+
 ---
 
 ## Tech Stack
@@ -115,7 +118,6 @@ server/        → WebSocket logic
 * Typing indicators and read receipts
 * Media/file sharing support
 * Improved scalability using Redis or message brokers
-* Presence tracking (online/offline status)
 
 ---
 
